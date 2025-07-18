@@ -1,0 +1,41 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+df = pd.read_csv('scrap_data.csv')
+
+# Display first few rows
+print("First 5 rows of the dataset:\n", df.head())
+
+#Get info on data
+print("\nData Types:\n")
+print(df.info())
+
+# Check for missing values
+print("\nMissing Values:\n")
+print(df.isnull().sum())
+
+#Price distribution plot
+plt.figure(figsize=(8, 5))
+sns.histplot(df['Price'], bins=10, kde=True, color='skyblue')
+plt.title("Distribution of Book Prices")
+plt.xlabel("Price (£)")
+plt.ylabel("Number of Books")
+plt.grid(True)
+plt.show()
+
+# Books below £30
+cheap_books = df[df['Price'] < 30]
+print(f"Books priced below £30: {len(cheap_books)} out of {len(df)}")
+
+# Price ranges
+df['Price Range'] = pd.cut(df['Price'], bins=[0, 20, 40, 60, 80, 100], labels=['0-20', '20-40', '40-60', '60-80', '80-100'])
+
+plt.figure(figsize=(7, 4))
+sns.countplot(x='Price Range', data=df, palette='coolwarm')
+plt.title("Books Count by Price Range")
+plt.show()      
+
+price_counts = df['Price Range'].value_counts(normalize=True) * 100
+print("\nPrice Range Distribution (%):\n", price_counts)
